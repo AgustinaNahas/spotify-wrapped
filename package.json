@@ -4,6 +4,7 @@
   "description": "",
   "main": "history.js",
   "scripts": {
+    "start": "node history.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

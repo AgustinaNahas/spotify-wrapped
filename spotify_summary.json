@@ -1,0 +1,76 @@
+{
+  "Minutos escuchados": 27900,
+  "Canciones escuchadas": 4033,
+  "Canciones más escuchadas": [
+    "Unknown Track (Unknown Artist) (50 veces)",
+    "Desaparecer (Peces Raros) (20 veces)",
+    "Óxido (Peces Raros) (17 veces)",
+    "Out of Time (feat. Bea Miller) (Zedd) (16 veces)",
+    "One Night/All Night (Justice) (15 veces)",
+    "RIOT - RAIZHELL Remix (Öwnboss) (15 veces)",
+    "The Beginning (Sullivan King) (15 veces)",
+    "Give Out - Feed Me Remix (Kill The Noise) (14 veces)",
+    "Artificial (Peces Raros) (14 veces)",
+    "Mirage - Mat Zo Remix (Kill The Noise) (13 veces)"
+  ],
+  "Artistas escuchados": 1293,
+  "Artistas más escuchados por cantidad de canciones": [
+    "Above & Beyond (73 canciones)",
+    "The Chainsmokers (61 canciones)",
+    "Justice (49 canciones)",
+    "Peces Raros (47 canciones)",
+    "Monstercat Silk Showcase (46 canciones)",
+    "Armin van Buuren (46 canciones)",
+    "Gorillaz (46 canciones)",
+    "Lawrence (45 canciones)",
+    "Monstercat Call of the Wild (44 canciones)",
+    "Kill The Noise (41 canciones)"
+  ],
+  "Artistas más escuchados por cantidad de tiempo": [
+    "Monstercat Call of the Wild (3269 minutos)",
+    "Monstercat Silk Showcase (2525 minutos)",
+    "Peces Raros (601 minutos)",
+    "Justice (454 minutos)",
+    "Above & Beyond (406 minutos)",
+    "Zedd (327 minutos)",
+    "The Chainsmokers (288 minutos)",
+    "Kill The Noise (270 minutos)",
+    "Protoculture (269 minutos)",
+    "Camo & Krooked (242 minutos)"
+  ],
+  "Días que más música escuché": [
+    "2024-05-28 (430 minutos) (7 horas)",
+    "2024-05-24 (346 minutos) (5 horas)",
+    "2024-05-10 (340 minutos) (5 horas)",
+    "2024-01-15 (318 minutos) (5 horas)",
+    "2024-06-18 (313 minutos) (5 horas)",
+    "2024-06-04 (310 minutos) (5 horas)",
+    "2024-03-04 (309 minutos) (5 horas)",
+    "2024-06-25 (298 minutos) (4 horas)",
+    "2024-06-07 (292 minutos) (4 horas)",
+    "2024-11-01 (291 minutos) (4 horas)"
+  ],
+  "Por día de la semana": {
+    "Martes": 227593209,
+    "Miércoles": 275779193,
+    "Jueves": 243166739,
+    "Viernes": 374867070,
+    "Domingo": 105222882,
+    "Lunes": 301162767,
+    "Sábado": 151347602
+  },
+  "Por mes": {
+    "Enero": 149084978,
+    "Febrero": 108075377,
+    "Marzo": 108376591,
+    "Abril": 116229272,
+    "Mayo": 276675211,
+    "Junio": 207318233,
+    "Julio": 159899518,
+    "Agosto": 134192094,
+    "Septiembre": 144502662,
+    "Octubre": 101379762,
+    "Noviembre": 70066445,
+    "Diciembre": 101889525
+  }
+}
