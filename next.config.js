@@ -6,8 +6,8 @@ const nextConfig = {
     unoptimized: true
   },
   // Configuración para GitHub Pages
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/spotify' : '',
-  basePath: process.env.NODE_ENV === 'production' ? '/spotify' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/spotify-wrapped' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/spotify-wrapped' : '',
 }
 
 module.exports = nextConfig
