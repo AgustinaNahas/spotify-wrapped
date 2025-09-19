@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #191414;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.spotify-card {
+  @apply bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700;
+}
+
+.spotify-button {
+  @apply bg-spotify-green hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+}
+
+.spotify-input {
+  @apply bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:border-spotify-green focus:outline-none;
+}

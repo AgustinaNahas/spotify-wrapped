@@ -1,4 +1,4 @@
-const history = [{
+const historyAll = [{
     "endTime" : "2024-01-01 05:34",
     "artistName" : "Fito Paez",
     "trackName" : "Al lado del camino",
@@ -66594,6 +66594,16 @@ const history = [{
   }
 ]
 
+const history = historyAll.filter((song) => 
+  {
+    const end = new Date('11/30/2024')
+    const now = new Date(song.endTime)
+
+    return now < end && song.msPlayed >= 30000
+
+  }
+)
+
 const sum = history.reduce((total, x) => { return x.msPlayed + total }, 0)
 
 var songs = []
@@ -66663,10 +66673,11 @@ history.forEach((song) => {
 
 console.log("Minutos escuchados: ", parseInt(sum/(60000)))
 console.log("Canciones escuchadas: ", songs.length)
-console.log("Canciones + escuchadas: ", songs.sort((a, b) => b.count - a.count).slice(0, 10).map((s) => `${s.trackName} (${s.artistName}) (${s.count} veces)`))
+console.log("Canciones + escuchadas x veces: ", songs.sort((a, b) => b.count - a.count).slice(0, 10).map((s) => `${s.trackName} (${s.artistName}) (${s.count} veces)`))
 console.log("Artistas escuchados: ", artistas.length)
 console.log("Artistas + escuchados por cantidad de canciones: ", artistas.sort((a, b) => b.uniqueSongs.length - a.uniqueSongs.length).slice(0, 10).map((s) => `${s.artistName} (${s.uniqueSongs.length} canciones)`))
 console.log("Artistas + escuchados por cantidad de tiempo: ", artistas.sort((a, b) => b.totalTime - a.totalTime).slice(0, 10).map((s) => `${s.artistName} (${parseInt(s.totalTime/60000)} minutos)`))
 console.log("Días que más música escuché: ", days.sort((a, b) => b.totalTime - a.totalTime).slice(0, 10).map((s) => `${s.endTime.split(" ")[0]} (${parseInt(s.totalTime/60000)} minutos) (${parseInt(s.totalTime/(3600000))} horas)`))
-console.log("Por día de la semana: ", conteoPorDiaSemana)
-console.log("Por mes: ", conteoPorMes)
+console.log("Por día de la semana: ", Object.fromEntries(Object.entries(conteoPorDiaSemana).map(([key, value]) => [key, `${parseInt(value / 60000)} min (${parseInt(value/(3600000))} horas)`])))
+console.log("Por mes: ", Object.fromEntries(Object.entries(conteoPorMes).map(([key, value]) => [key, `${parseInt(value / 60000)} min (${parseInt(value/(3600000))} horas)`])))
+
