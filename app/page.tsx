@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
+import JSZip from 'jszip'
 import StatsDisplay from '../components/StatsDisplay'
 
 interface SpotifyTrack {
@@ -44,16 +45,48 @@ export default function Home() {
       
       // Procesar cada archivo
       for (const file of acceptedFiles) {
-        const text = await file.text()
-        const data = JSON.parse(text)
-        allTracks.push(...data)
+        if (file.name.toLowerCase().endsWith('.zip')) {
+          // Procesar archivo ZIP
+          const zip = new JSZip()
+          const zipContent = await zip.loadAsync(file)
+          
+          // Buscar archivos que coincidan con el patrón StreamingHistory_music_*.json
+          const musicHistoryFiles = Object.keys(zipContent.files).filter(fileName => 
+            fileName.match(/StreamingHistory_music_\d+\.json$/i)
+          )
+          
+          if (musicHistoryFiles.length === 0) {
+            setError('No se encontraron archivos StreamingHistory_music_*.json en el ZIP.')
+            return
+          }
+          
+          // Extraer y procesar cada archivo JSON encontrado
+          for (const fileName of musicHistoryFiles) {
+            const jsonFile = zipContent.files[fileName]
+            if (!jsonFile.dir) {
+              const text = await jsonFile.async('text')
+              const data = JSON.parse(text)
+              allTracks.push(...data)
+            }
+          }
+        } else if (file.name.toLowerCase().endsWith('.json')) {
+          // Procesar archivo JSON individual
+          const text = await file.text()
+          const data = JSON.parse(text)
+          allTracks.push(...data)
+        }
+      }
+
+      if (allTracks.length === 0) {
+        setError('No se encontraron datos válidos de Spotify en los archivos.')
+        return
       }
 
       // Procesar los datos
       const processedStats = processSpotifyData(allTracks)
       setStats(processedStats)
     } catch (err) {
-      setError('Error al procesar los archivos. Asegúrate de que sean archivos JSON válidos de Spotify.')
+      setError('Error al procesar los archivos. Asegúrate de que sean archivos JSON válidos de Spotify o un ZIP con archivos StreamingHistory_music_*.json.')
       console.error(err)
     } finally {
       setLoading(false)
@@ -63,7 +96,9 @@ export default function Home() {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'application/json': ['.json']
+      'application/json': ['.json'],
+      'application/zip': ['.zip'],
+      'application/x-zip-compressed': ['.zip']
     },
     multiple: true
   })
@@ -95,10 +130,13 @@ export default function Home() {
           ) : (
             <div>
               <p className="text-lg mb-2">
-                Arrastra y suelta tus archivos <code>StreamingHistory_music_*.json</code> aquí
+                Arrastra y suelta tu archivo ZIP de Spotify o archivos <code>StreamingHistory_music_*.json</code> aquí
               </p>
               <p className="text-gray-400">
                 o haz clic para seleccionar archivos
+              </p>
+              <p className="text-sm text-gray-500 mt-2">
+                💡 <strong>Tip:</strong> Puedes subir directamente el ZIP que descargas de Spotify
               </p>
             </div>
           )}

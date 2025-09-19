@@ -39,14 +39,24 @@ npm run dev
 1. Ve a [Spotify Privacy Settings](https://www.spotify.com/account/privacy/)
 2. Solicita una copia de tus datos
 3. Descarga el archivo ZIP que te envían por email
-4. Extrae el archivo y busca los archivos `StreamingHistory_music_*.json`
-5. Sube estos archivos a la aplicación
+4. **¡Listo!** Sube directamente el archivo ZIP a la aplicación
+
+### 🔄 **Proceso automático:**
+- La aplicación extraerá automáticamente el ZIP
+- Buscará todos los archivos `StreamingHistory_music_*.json`
+- Procesará todos los datos de una vez
 
 ## 🎯 Uso
 
 1. Abre la aplicación web
-2. Arrastra y suelta tus archivos `StreamingHistory_music_*.json` en el área designada
-3. ¡Disfruta explorando tus estadísticas de música!
+2. **Opción 1:** Arrastra y suelta tu archivo ZIP de Spotify (¡más fácil!)
+3. **Opción 2:** Arrastra y suelta tus archivos `StreamingHistory_music_*.json` individuales
+4. ¡Disfruta explorando tus estadísticas de música!
+
+### 💡 **Tip para usuarios:**
+- **Recomendado:** Sube directamente el archivo ZIP que descargas de Spotify
+- La aplicación automáticamente extraerá y buscará los archivos `StreamingHistory_music_*.json`
+- ¡No necesitas descomprimir nada manualmente!
 
 ## 🏗️ Construcción para producción
 
@@ -100,6 +110,7 @@ npm run build
 - **TypeScript** - Tipado estático
 - **Tailwind CSS** - Estilos modernos
 - **React Dropzone** - Subida de archivos drag & drop
+- **JSZip** - Extracción de archivos ZIP en el navegador
 
 ## 📊 Estadísticas incluidas
 
