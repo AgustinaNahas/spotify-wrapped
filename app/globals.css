@@ -2,20 +2,270 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #191414;
-  color: white;
-  font-family: 'Inter', sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #0f0f0f 50%, #1a1a1a 75%, #0a0a0a 100%);
+  background-attachment: fixed;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Fondo animado con partículas */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(29, 185, 84, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 80% 20%, rgba(30, 215, 96, 0.06) 0%, transparent 60%),
+    radial-gradient(circle at 40% 40%, rgba(29, 185, 84, 0.04) 0%, transparent 60%),
+    radial-gradient(circle at 60% 70%, rgba(30, 215, 96, 0.05) 0%, transparent 60%);
+  animation: backgroundShift 20s ease-in-out infinite;
+  z-index: -2;
+}
+
+/* Partículas flotantes */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(29, 185, 84, 0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(30, 215, 96, 0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(29, 185, 84, 0.4), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(30, 215, 96, 0.3), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(29, 185, 84, 0.2), transparent),
+    /* Patrón de ondas sutiles */
+    linear-gradient(45deg, transparent 48%, rgba(29, 185, 84, 0.02) 49%, rgba(29, 185, 84, 0.02) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(30, 215, 96, 0.02) 49%, rgba(30, 215, 96, 0.02) 51%, transparent 52%);
+  background-repeat: repeat;
+  background-size: 200px 100px, 100px 100px, 100px 100px;
+  animation: particleFloat 25s linear infinite;
+  z-index: -1;
+}
+
+/* Animaciones personalizadas */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    transform: translateX(0) translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translateX(-10px) translateY(-5px) scale(1.02);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateX(5px) translateY(-10px) scale(0.98);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translateX(-5px) translateY(5px) scale(1.01);
+    opacity: 0.85;
+  }
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-20px) translateX(10px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(-5px);
+  }
+  75% {
+    transform: translateY(-30px) translateX(15px);
+  }
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(29, 185, 84, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(29, 185, 84, 0.2);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-background-shift {
+  animation: backgroundShift 20s ease-in-out infinite;
+}
+
+.animate-particle-float {
+  animation: particleFloat 25s linear infinite;
+}
+
+/* Componentes personalizados */
 .spotify-card {
-  @apply bg-gray-800 rounded-lg p-6 shadow-lg border border-gray-700;
+  @apply backdrop-blur-sm rounded-xl p-4 sm:p-6 shadow-xl border;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.05));
+  border-color: rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+.spotify-card:hover {
+  @apply shadow-xl;
+  transform: translateY(-1px);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.06));
+  border-color: rgba(29, 185, 84, 0.2);
 }
 
 .spotify-button {
-  @apply bg-spotify-green hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  @apply bg-spotify-green hover:bg-green-500 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-spotify-green/25;
+  background: linear-gradient(135deg, #1DB954, #1ed760);
+  transform: translateY(0);
+}
+
+.spotify-button:hover {
+  transform: translateY(-1px);
+}
+
+.spotify-button:active {
+  transform: translateY(0);
 }
 
 .spotify-input {
-  @apply bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:border-spotify-green focus:outline-none;
+  @apply bg-gray-700/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:border-spotify-green focus:outline-none focus:ring-2 focus:ring-spotify-green/20 transition-all duration-300;
+  backdrop-filter: blur(10px);
+}
+
+.spotify-input:focus {
+  background: rgba(55, 65, 81, 0.6);
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.1);
+}
+
+/* Efectos de glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #535353;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1DB954;
+}
+
+/* Mejoras para texto */
+.text-gradient {
+  background: linear-gradient(135deg, #1DB954, #1ed760);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Efectos de hover mejorados */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .spotify-card {
+    @apply p-4;
+  }
+  
+  .spotify-button {
+    @apply py-2 px-4 text-sm;
+  }
 }
