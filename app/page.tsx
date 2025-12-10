@@ -55,46 +55,122 @@ export default function Home() {
         if (file.name.toLowerCase().endsWith('.zip')) {
           // Procesar archivo ZIP
           const zip = new JSZip()
-          const zipContent = await zip.loadAsync(file)
+          let zipContent: JSZip
+          
+          try {
+            zipContent = await zip.loadAsync(file)
+          } catch (zipError) {
+            setError('Error al leer el archivo ZIP. Asegúrate de que el archivo no esté corrupto.')
+            console.error('Error loading ZIP:', zipError)
+            return
+          }
           
           // Buscar archivos que coincidan con el patrón StreamingHistory_music_*.json
-          const musicHistoryFiles = Object.keys(zipContent.files).filter(fileName => 
-            fileName.match(/StreamingHistory_music_\d+\.json$/i)
-          )
+          // Buscar en todas las rutas, incluyendo subdirectorios
+          const musicHistoryFiles = Object.keys(zipContent.files).filter(fileName => {
+            // Ignorar directorios y buscar archivos JSON que coincidan con el patrón
+            const zipFile = zipContent.files[fileName]
+            if (zipFile.dir) return false
+            
+            // Buscar archivos que coincidan con StreamingHistory_music_*.json en cualquier ubicación
+            return fileName.match(/StreamingHistory_music_\d+\.json$/i) || 
+                   fileName.match(/.*[\/\\]StreamingHistory_music_\d+\.json$/i)
+          })
           
           if (musicHistoryFiles.length === 0) {
-            setError('No se encontraron archivos StreamingHistory_music_*.json en el ZIP.')
-            return
+            // Intentar buscar cualquier archivo JSON relacionado con streaming
+            const allJsonFiles = Object.keys(zipContent.files).filter(fileName => {
+              const zipFile = zipContent.files[fileName]
+              if (zipFile.dir) return false
+              return fileName.toLowerCase().includes('streaming') && 
+                     fileName.toLowerCase().endsWith('.json')
+            })
+            
+            if (allJsonFiles.length === 0) {
+              // Listar algunos archivos del ZIP para ayudar al usuario
+              const sampleFiles = Object.keys(zipContent.files)
+                .filter(f => !zipContent.files[f].dir)
+                .slice(0, 5)
+                .map(f => `  - ${f}`)
+                .join('\n')
+              
+              setError(`No se encontraron archivos StreamingHistory_music_*.json en el ZIP.\n\nArchivos encontrados en el ZIP:\n${sampleFiles}\n\nAsegúrate de que el ZIP contenga archivos de historial de reproducción de Spotify.`)
+              return
+            } else {
+              // Usar los archivos encontrados aunque no coincidan exactamente con el patrón
+              musicHistoryFiles.push(...allJsonFiles)
+            }
           }
           
           // Extraer y procesar cada archivo JSON encontrado
           for (const fileName of musicHistoryFiles) {
-            const jsonFile = zipContent.files[fileName]
-            if (!jsonFile.dir) {
-              const text = await jsonFile.async('text')
-              const data = JSON.parse(text)
-              allTracks.push(...data)
+            try {
+              const jsonFile = zipContent.files[fileName]
+              if (!jsonFile.dir) {
+                const text = await jsonFile.async('text')
+                const data = JSON.parse(text)
+                
+                // Verificar que sea un array de objetos con la estructura esperada
+                if (Array.isArray(data) && data.length > 0) {
+                  // Verificar que tenga la estructura básica de un track de Spotify
+                  if (data[0].hasOwnProperty('endTime') || data[0].hasOwnProperty('ts')) {
+                    allTracks.push(...data)
+                  } else {
+                    console.warn(`El archivo ${fileName} no tiene la estructura esperada de Spotify`)
+                  }
+                } else {
+                  console.warn(`El archivo ${fileName} no es un array válido`)
+                }
+              }
+            } catch (fileError) {
+              console.error(`Error procesando ${fileName}:`, fileError)
+              // Continuar con otros archivos aunque uno falle
             }
           }
         } else if (file.name.toLowerCase().endsWith('.json')) {
           // Procesar archivo JSON individual
-          const text = await file.text()
-          const data = JSON.parse(text)
-          allTracks.push(...data)
+          try {
+            const text = await file.text()
+            const data = JSON.parse(text)
+            if (Array.isArray(data)) {
+              allTracks.push(...data)
+            } else {
+              setError('El archivo JSON no contiene un array válido de datos.')
+              return
+            }
+          } catch (jsonError) {
+            setError(`Error al procesar el archivo JSON: ${file.name}. Asegúrate de que sea un archivo válido de Spotify.`)
+            console.error('Error parsing JSON:', jsonError)
+            return
+          }
         }
       }
 
       if (allTracks.length === 0) {
-        setError('No se encontraron datos válidos de Spotify en los archivos.')
+        setError('No se encontraron datos válidos de Spotify en los archivos. Verifica que el ZIP contenga archivos StreamingHistory_music_*.json o archivos JSON de historial de reproducción.')
         return
       }
 
+      // Normalizar los datos (algunos formatos de Spotify usan 'ts' en lugar de 'endTime')
+      const normalizedTracks = allTracks.map(track => {
+        // Si el track tiene 'ts' en lugar de 'endTime', convertir
+        const trackAny = track as any
+        if (trackAny.ts && !track.endTime) {
+          return {
+            ...track,
+            endTime: trackAny.ts
+          }
+        }
+        return track
+      })
+
       // Procesar los datos
-      const processedStats = processSpotifyData(allTracks)
+      const processedStats = processSpotifyData(normalizedTracks)
       setStats(processedStats)
     } catch (err) {
-      setError('Error al procesar los archivos. Asegúrate de que sean archivos JSON válidos de Spotify o un ZIP con archivos StreamingHistory_music_*.json.')
-      console.error(err)
+      const errorMessage = err instanceof Error ? err.message : 'Error desconocido'
+      setError(`Error al procesar los archivos: ${errorMessage}\n\nAsegúrate de que:\n- El archivo ZIP no esté corrupto\n- Contenga archivos StreamingHistory_music_*.json\n- Los archivos JSON sean válidos`)
+      console.error('Error completo:', err)
     } finally {
       setLoading(false)
     }
@@ -105,10 +181,36 @@ export default function Home() {
     accept: {
       'application/json': ['.json'],
       'application/zip': ['.zip'],
-      'application/x-zip-compressed': ['.zip']
+      'application/x-zip-compressed': ['.zip'],
+      'application/x-zip': ['.zip']
     },
     multiple: true
   })
+
+  // Función para cargar el archivo por defecto
+  const loadDefaultData = async () => {
+    setLoading(true)
+    setError(null)
+    
+    try {
+      // Cargar el archivo desde public
+      const response = await fetch('/my_spotify_data.zip')
+      if (!response.ok) {
+        throw new Error('No se pudo cargar el archivo por defecto')
+      }
+      
+      const blob = await response.blob()
+      const file = new File([blob], 'my_spotify_data.zip', { type: 'application/zip' })
+      
+      // Procesar el archivo usando la misma lógica que onDrop
+      await onDrop([file])
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Error desconocido'
+      setError(`Error al cargar el archivo por defecto: ${errorMessage}`)
+      console.error('Error loading default data:', err)
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="min-h-screen">
@@ -176,6 +278,21 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Botón para cargar datos por defecto */}
+        <div className="max-w-3xl mx-auto mb-8 sm:mb-12 text-center">
+          <button
+            onClick={loadDefaultData}
+            disabled={loading}
+            className="px-6 py-3 bg-gradient-to-r from-spotify-green to-green-500 hover:from-green-500 hover:to-green-600 text-black font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-spotify-green/25 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 mx-auto"
+          >
+            <span>📊</span>
+            <span>Cargar datos de ejemplo</span>
+          </button>
+          <p className="text-gray-400 text-xs sm:text-sm mt-2">
+            Carga automáticamente el archivo my_spotify_data.zip para ver las estadísticas de ejemplo
+          </p>
+        </div>
+
         {/* Loading mejorado */}
         {loading && (
           <div className="text-center py-8 sm:py-12">
@@ -229,7 +346,15 @@ function analyzeSkipPatterns(history: SpotifyTrack[]): {
   const songGroups: Record<string, SpotifyTrack[]> = {}
   
   history.forEach(song => {
-    const key = `${song.artistName}|||${song.trackName}`
+    const trackName = song.trackName?.trim() || ''
+    const artistName = song.artistName?.trim() || ''
+    
+    // Solo procesar canciones con datos válidos
+    if (!trackName || !artistName) {
+      return
+    }
+    
+    const key = `${artistName}|||${trackName}`
     if (!songGroups[key]) {
       songGroups[key] = []
     }
@@ -293,8 +418,19 @@ function checkIfRestart(songGroup: SpotifyTrack[], currentIndex: number): boolea
 }
 
 function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
+  // Filtrar canciones con datos inválidos (nombres vacíos, nulos o solo espacios)
+  const validHistory = history.filter(song => {
+    const hasValidTrackName = song.trackName && 
+                               typeof song.trackName === 'string' && 
+                               song.trackName.trim().length > 0
+    const hasValidArtistName = song.artistName && 
+                                typeof song.artistName === 'string' && 
+                                song.artistName.trim().length > 0
+    return hasValidTrackName && hasValidArtistName && song.msPlayed > 0
+  })
+  
   // Ordenar el historial por tiempo para analizar secuencias
-  const sortedHistory = [...history].sort((a, b) => new Date(a.endTime).getTime() - new Date(b.endTime).getTime())
+  const sortedHistory = [...validHistory].sort((a, b) => new Date(a.endTime).getTime() - new Date(b.endTime).getTime())
   
   // Filtrar canciones con al menos 30 segundos de reproducción
   const filteredHistory = sortedHistory.filter(song => song.msPlayed >= 30000)
@@ -325,29 +461,40 @@ function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
   
   // Primero, contar todas las canciones por artista (total)
-  history.forEach((song) => {
-    artistTotalSongs[song.artistName] = (artistTotalSongs[song.artistName] || 0) + 1
+  validHistory.forEach((song) => {
+    const artistName = song.artistName?.trim() || ''
+    if (artistName) {
+      artistTotalSongs[artistName] = (artistTotalSongs[artistName] || 0) + 1
+    }
   })
   
   filteredHistory.forEach((song) => {
+    // Validar que la canción tenga datos válidos antes de procesar
+    const trackName = song.trackName?.trim() || ''
+    const artistName = song.artistName?.trim() || ''
+    
+    if (!trackName || !artistName) {
+      return // Saltar canciones con datos inválidos
+    }
+    
     // Contar canciones
-    const foundSong = songs.find(s => s.artistName === song.artistName && s.trackName === song.trackName)
+    const foundSong = songs.find(s => s.artistName === artistName && s.trackName === trackName)
     if (foundSong) {
       foundSong.count += 1
     } else {
-      songs.push({ count: 1, trackName: song.trackName, artistName: song.artistName })
+      songs.push({ count: 1, trackName: trackName, artistName: artistName })
     }
     
     // Contar artistas
-    const foundArtist = artistas.find(s => s.artistName === song.artistName)
+    const foundArtist = artistas.find(s => s.artistName === artistName)
     if (foundArtist) {
       foundArtist.totalTime += song.msPlayed
-      foundArtist.uniqueSongs = Array.from(new Set([song.trackName, ...foundArtist.uniqueSongs]))
+      foundArtist.uniqueSongs = Array.from(new Set([trackName, ...foundArtist.uniqueSongs]))
     } else {
       artistas.push({ 
         totalTime: song.msPlayed, 
-        uniqueSongs: [song.trackName], 
-        artistName: song.artistName 
+        uniqueSongs: [trackName], 
+        artistName: artistName 
       })
     }
     
@@ -372,12 +519,19 @@ function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
   
   // Procesar saltos reales
   realSkips.forEach((song) => {
+    const trackName = song.trackName?.trim() || ''
+    const artistName = song.artistName?.trim() || ''
+    
+    if (!trackName || !artistName) {
+      return // Saltar canciones con datos inválidos
+    }
+    
     // Contar canciones realmente salteadas
-    const foundSkippedSong = realSkippedSongs.find(s => s.artistName === song.artistName && s.trackName === song.trackName)
+    const foundSkippedSong = realSkippedSongs.find(s => s.artistName === artistName && s.trackName === trackName)
     if (foundSkippedSong) {
       foundSkippedSong.count += 1
     } else {
-      realSkippedSongs.push({ count: 1, trackName: song.trackName, artistName: song.artistName })
+      realSkippedSongs.push({ count: 1, trackName: trackName, artistName: artistName })
     }
     
     // Contar artistas más salteados
@@ -397,12 +551,19 @@ function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
   
   // Procesar reinicios
   restarts.forEach((song) => {
+    const trackName = song.trackName?.trim() || ''
+    const artistName = song.artistName?.trim() || ''
+    
+    if (!trackName || !artistName) {
+      return // Saltar canciones con datos inválidos
+    }
+    
     // Contar canciones reiniciadas
-    const foundRestartSong = restartSongs.find(s => s.artistName === song.artistName && s.trackName === song.trackName)
+    const foundRestartSong = restartSongs.find(s => s.artistName === artistName && s.trackName === trackName)
     if (foundRestartSong) {
       foundRestartSong.count += 1
     } else {
-      restartSongs.push({ count: 1, trackName: song.trackName, artistName: song.artistName })
+      restartSongs.push({ count: 1, trackName: trackName, artistName: artistName })
     }
     
     // Contar artistas con más reinicios
@@ -475,9 +636,10 @@ function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
     totalMinutes: Math.floor(sum / 60000),
     totalSongs: songs.length,
     topSongs: songs
+      .filter(s => s.trackName && s.trackName.trim().length > 0 && s.artistName && s.artistName.trim().length > 0)
       .sort((a, b) => b.count - a.count)
       .slice(0, 10)
-      .map(s => ({ trackName: s.trackName, artistName: s.artistName, count: s.count })),
+      .map(s => ({ trackName: s.trackName.trim(), artistName: s.artistName.trim(), count: s.count })),
     totalArtists: artistas.length,
     topArtistsBySongs: artistas
       .sort((a, b) => b.uniqueSongs.length - a.uniqueSongs.length)
@@ -521,11 +683,15 @@ function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
     totalSkippedSongs: realSkips.length,
     totalRestartSongs: restarts.length,
     topSkippedSongs: realSkippedSongs
+      .filter(s => s.trackName && s.trackName.trim().length > 0 && s.artistName && s.artistName.trim().length > 0)
       .sort((a, b) => b.count - a.count)
-      .slice(0, 10),
+      .slice(0, 10)
+      .map(s => ({ trackName: s.trackName.trim(), artistName: s.artistName.trim(), count: s.count })),
     topRestartSongs: restartSongs
+      .filter(s => s.trackName && s.trackName.trim().length > 0 && s.artistName && s.artistName.trim().length > 0)
       .sort((a, b) => b.count - a.count)
-      .slice(0, 10),
+      .slice(0, 10)
+      .map(s => ({ trackName: s.trackName.trim(), artistName: s.artistName.trim(), count: s.count })),
     topSkippedArtists: realSkippedArtists
       .sort((a, b) => b.skippedCount - a.skippedCount)
       .slice(0, 10),
@@ -538,3 +704,4 @@ function processSpotifyData(history: SpotifyTrack[]): ProcessedStats {
     topRestartSongsByArtist: restartSongsByArtist
   }
 }
+
