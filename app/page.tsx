@@ -337,53 +337,54 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Botones para cargar datos de ejemplo */}
-        <div className="max-w-3xl mx-auto mb-8 sm:mb-12">
-          <div className="text-center mb-4">
-            <h3 className="text-lg sm:text-xl font-semibold text-gray-300 mb-2">
-              📊 Datos de ejemplo
-            </h3>
-            <p className="text-gray-400 text-sm mb-4">
-              Prueba la aplicación con datos reales
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-            {/* Botón 2025 */}
-            <button
-              onClick={load2025Data}
-              disabled={loading}
-              className="px-4 py-3 bg-gradient-to-r from-spotify-green to-green-500 hover:from-green-500 hover:to-green-600 text-black font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-spotify-green/25 disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center space-y-1"
-            >
-              <span className="text-lg">🎵</span>
-              <span className="text-sm">2025</span>
-              <span className="text-xs opacity-80">my_spotify_data.zip</span>
-            </button>
+        {/* Botones para cargar datos de ejemplo - Solo visible cuando no hay datos cargados */}
+        {!stats && (
+          <div className="max-w-3xl mx-auto mb-8 sm:mb-12">
+            <div className="text-center mb-4">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-300 mb-2">
+                📊 Datos de ejemplo
+              </h3>
+              <p className="text-gray-400 text-sm mb-4">
+                Prueba la aplicación con datos reales
+              </p>
+            </div>
             
-            {/* Botón 2024 */}
-            <button
-              onClick={load2024Data}
-              disabled={loading}
-              className="px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center space-y-1"
-            >
-              <span className="text-lg">🎤</span>
-              <span className="text-sm">2024</span>
-              <span className="text-xs opacity-80">Spotify Account Data</span>
-            </button>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              {/* Botón 2025 */}
+              <button
+                onClick={load2025Data}
+                disabled={loading}
+                className="px-4 py-3 bg-gradient-to-r from-spotify-green to-green-500 hover:from-green-500 hover:to-green-600 text-black font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-spotify-green/25 disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center space-y-1"
+              >
+                <span className="text-lg">🎵</span>
+                <span className="text-sm">2025</span>
+                <span className="text-xs opacity-80">my_spotify_data.zip</span>
+              </button>
+              
+              {/* Botón 2024 */}
+              <button
+                onClick={load2024Data}
+                disabled={loading}
+                className="px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center space-y-1"
+              >
+                <span className="text-lg">🎤</span>
+                <span className="text-sm">2024</span>
+                <span className="text-xs opacity-80">Spotify Account Data</span>
+              </button>
+            </div>
+            
+            {/* Comentario gracioso */}
+            <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl p-4 border border-purple-500/20 text-center">
+              <p className="text-sm text-gray-300 leading-relaxed">
+                <span className="text-purple-400 font-semibold">💀 Aviso importante:</span> Estos son mis datos reales de Spotify. 
+                <br/>Juzguen mi gusto musical todo lo que quieran—yo me juzgo mucho más que ustedes. 
+              </p>
+              <p className="text-xs text-gray-500 mt-2 italic">
+                (Sí, me escuché esa canción 47 veces. No, no me arrepiento.)
+              </p>
+            </div>
           </div>
-          
-          {/* Comentario gracioso */}
-          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl p-4 border border-purple-500/20 text-center">
-            <p className="text-sm text-gray-300 leading-relaxed">
-              <span className="text-purple-400 font-semibold">💀 Disclaimer:</span> Estos son mis datos reales de Spotify. 
-              <span className="text-pink-400 font-medium"> Roast me</span> por mis gustos musicales, 
-              pero al menos tengo buen gusto en aplicaciones web 😎
-            </p>
-            <p className="text-xs text-gray-500 mt-2">
-              (Sí, me escuché esa canción 47 veces. No, no me arrepiento.)
-            </p>
-          </div>
-        </div>
+        )}
 
         {/* Loading mejorado */}
         {loading && (
