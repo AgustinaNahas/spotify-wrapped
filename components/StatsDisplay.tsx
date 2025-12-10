@@ -63,9 +63,28 @@ export default function StatsDisplay({ stats }: StatsDisplayProps) {
         <div className="spotify-card text-center group hover:scale-[1.01] transition-all duration-300 hover:shadow-lg hover:shadow-spotify-green/10 animate-fadeInUp" style={{animationDelay: '0.1s'}}>
           <div className="text-3xl sm:text-4xl mb-3 animate-float">⏱️</div>
           <h3 className="text-2xl sm:text-3xl font-bold text-spotify-green mb-2">
-            {Math.floor(stats.totalMinutes / 60)}h {stats.totalMinutes % 60}m
+            {(() => {
+              const totalDays = Math.floor(stats.totalMinutes / (60 * 24))
+              const totalHours = Math.floor(stats.totalMinutes / 60)
+              const totalMinutes = stats.totalMinutes
+              const hours = Math.floor((stats.totalMinutes % (60 * 24)) / 60)
+              const minutes = stats.totalMinutes % 60
+              
+              if (totalDays > 0) {
+                return `${totalDays}d ${hours}h ${minutes}m`
+              } else if (totalHours > 0) {
+                return `${totalHours}h ${minutes}m`
+              } else {
+                return `${totalMinutes}m`
+              }
+            })()}
           </h3>
-          <p className="text-gray-300 text-sm sm:text-base">Minutos escuchados</p>
+          <div className="text-gray-300 text-xs sm:text-sm space-y-1">
+            <p className="font-medium">Total: {stats.totalMinutes.toLocaleString()} minutos</p>
+            <p className="text-gray-400">
+              {Math.floor(stats.totalMinutes / 60).toLocaleString()} horas • {Math.floor(stats.totalMinutes / (60 * 24)).toLocaleString()} días
+            </p>
+          </div>
         </div>
         
         <div className="spotify-card text-center group hover:scale-[1.01] transition-all duration-300 hover:shadow-lg hover:shadow-spotify-green/10 animate-fadeInUp" style={{animationDelay: '0.2s'}}>

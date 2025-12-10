@@ -358,7 +358,6 @@ export default function Home() {
               >
                 <span className="text-lg">🎵</span>
                 <span className="text-sm">2025</span>
-                <span className="text-xs opacity-80">my_spotify_data.zip</span>
               </button>
               
               {/* Botón 2024 */}
@@ -369,7 +368,6 @@ export default function Home() {
               >
                 <span className="text-lg">🎤</span>
                 <span className="text-sm">2024</span>
-                <span className="text-xs opacity-80">Spotify Account Data</span>
               </button>
             </div>
             

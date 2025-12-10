@@ -58,7 +58,7 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto max-h-[calc(90vh-100px)] p-6 sm:p-8">
+        <div className="overflow-y-auto max-h-[calc(90vh-100px)] p-6 sm:p-8 pb-12 sm:pb-16">
           <div className="space-y-8">
             {/* Introducción */}
             <div className="bg-white/5 rounded-xl p-6 border border-white/10">
@@ -82,12 +82,17 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
               </div>
               <div className="ml-12 sm:ml-14 bg-white/5 rounded-xl p-6 border border-white/10 space-y-4">
                 <p className="text-gray-300 leading-relaxed">
-                  Ve a la página de <strong className="text-spotify-green">Privacidad de Spotify</strong> en tu navegador:
+                  Ve a la página de <strong className="text-spotify-green">Privacidad de Spotify</strong>:
                 </p>
                 <div className="bg-black/50 rounded-lg p-4 border border-spotify-green/30">
-                  <code className="text-spotify-green break-all">
+                  <a 
+                    href="https://www.spotify.com/account/privacy/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-spotify-green hover:text-green-400 transition-colors duration-200 underline break-all"
+                  >
                     https://www.spotify.com/account/privacy/
-                  </code>
+                  </a>
                 </div>
                 <p className="text-gray-400 text-sm">
                   💡 <strong>Nota:</strong> Debes estar logueado con tu cuenta de Spotify para acceder a esta sección.
@@ -111,9 +116,22 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
                   <p className="text-spotify-green font-semibold text-lg mb-2">
                     📥 "Descargar tus datos"
                   </p>
-                  <p className="text-gray-300 text-sm">
-                    O busca específicamente: <strong>"Historial de reproducción"</strong> o <strong>"Streaming History"</strong>
+                  <p className="text-gray-300 text-sm mb-3">
+                    Busca específicamente: <strong>"Historial de reproducción"</strong> o <strong>"Streaming History"</strong>
                   </p>
+                  <div className="bg-green-500/20 border border-green-500/40 rounded-lg p-3 mt-3">
+                    <p className="text-green-300 text-sm font-semibold mb-1">
+                      ✅ Selecciona: <strong>"Historial de reproducción"</strong>
+                    </p>
+                    <p className="text-green-200 text-xs">
+                      (El que dice <strong>5 días de preparación</strong>)
+                    </p>
+                  </div>
+                  <div className="bg-red-500/20 border border-red-500/40 rounded-lg p-3 mt-2">
+                    <p className="text-red-300 text-sm font-semibold">
+                      ❌ NO elijas: <strong>"Historial de reproducción extendido"</strong>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -124,17 +142,22 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
                 <div className="flex-shrink-0 w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center font-bold text-lg">
                   3
                 </div>
-                <h3 className="text-xl font-bold text-white">Selecciona el rango de tiempo</h3>
+                <h3 className="text-xl font-bold text-white">Confirma la solicitud</h3>
               </div>
               <div className="ml-12 sm:ml-14 bg-white/5 rounded-xl p-6 border border-white/10 space-y-4">
                 <p className="text-gray-300 leading-relaxed">
-                  Cuando solicites la descarga, Spotify te permitirá elegir el período de tiempo. Para obtener estadísticas completas:
+                  Después de seleccionar "Historial de reproducción", Spotify te pedirá que confirmes la solicitud:
                 </p>
-                <ul className="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                  <li>Selecciona <strong className="text-spotify-green">"Último año"</strong> o el rango más amplio disponible</li>
-                  <li>O selecciona <strong className="text-spotify-green">"Todo el historial"</strong> si está disponible</li>
-                  <li>Asegúrate de incluir el <strong className="text-spotify-green">historial de música</strong> (no solo podcasts)</li>
-                </ul>
+                <ol className="list-decimal list-inside space-y-2 text-gray-300 ml-4">
+                  <li>Verifica que hayas seleccionado el <strong className="text-spotify-green">historial de reproducción de música</strong> (no el extendido)</li>
+                  <li>Confirma tu dirección de correo electrónico donde recibirás la notificación</li>
+                  <li>Haz clic en el botón <strong className="text-spotify-green">"Solicitar"</strong> o <strong className="text-spotify-green">"Confirmar solicitud"</strong></li>
+                </ol>
+                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mt-4">
+                  <p className="text-green-300 text-sm">
+                    ✅ <strong>Confirmación:</strong> Después de confirmar, verás un mensaje indicando que tu solicitud ha sido recibida. Spotify te enviará un email cuando tus datos estén listos (aproximadamente en 5 días).
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -144,28 +167,20 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
                 <div className="flex-shrink-0 w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center font-bold text-lg">
                   4
                 </div>
-                <h3 className="text-xl font-bold text-white">Confirma la solicitud de datos</h3>
+                <h3 className="text-xl font-bold text-white">Espera el email de Spotify</h3>
               </div>
               <div className="ml-12 sm:ml-14 bg-white/5 rounded-xl p-6 border border-white/10 space-y-4">
                 <p className="text-gray-300 leading-relaxed">
-                  Después de seleccionar el rango de tiempo y los datos que deseas descargar, Spotify te pedirá que confirmes la solicitud:
+                  Spotify procesará tu solicitud y te enviará un email cuando tus datos estén listos:
                 </p>
-                <ol className="list-decimal list-inside space-y-3 text-gray-300 ml-4">
-                  <li>Revisa que el rango de tiempo seleccionado sea correcto</li>
-                  <li>Verifica que hayas seleccionado el <strong className="text-spotify-green">historial de reproducción de música</strong></li>
-                  <li>Confirma tu dirección de correo electrónico donde recibirás la notificación</li>
-                  <li>Haz clic en el botón <strong className="text-spotify-green">"Solicitar"</strong> o <strong className="text-spotify-green">"Confirmar solicitud"</strong></li>
-                </ol>
-                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mt-4">
-                  <p className="text-green-300 text-sm">
-                    ✅ <strong>Confirmación:</strong> Después de confirmar, verás un mensaje indicando que tu solicitud ha sido recibida. Spotify te enviará un email cuando tus datos estén listos.
-                  </p>
-                </div>
                 <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mt-4">
                   <p className="text-yellow-300 text-sm">
-                    ⚠️ <strong>Importante:</strong> El proceso puede tardar entre 1 y 30 días. Asegúrate de revisar tu correo regularmente, incluyendo la carpeta de spam.
+                    ⏱️ <strong>Tiempo de espera:</strong> El proceso tarda aproximadamente <strong>5 días</strong> (ya que elegiste el historial de reproducción estándar). Asegúrate de revisar tu correo regularmente, incluyendo la carpeta de spam.
                   </p>
                 </div>
+                <p className="text-gray-300 text-sm mt-4">
+                  El email llegará a la dirección asociada a tu cuenta de Spotify con el asunto similar a <strong className="text-spotify-green">"Tus datos de Spotify están listos"</strong>.
+                </p>
               </div>
             </div>
 
@@ -196,37 +211,15 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
                 <div className="flex-shrink-0 w-10 h-10 bg-spotify-green rounded-full flex items-center justify-center font-bold text-lg">
                   6
                 </div>
-                <h3 className="text-xl font-bold text-white">Extrae y sube los archivos</h3>
+                <h3 className="text-xl font-bold text-white">Sube el archivo ZIP</h3>
               </div>
               <div className="ml-12 sm:ml-14 bg-white/5 rounded-xl p-6 border border-white/10 space-y-4">
-                <p className="text-gray-300 leading-relaxed mb-4">
-                  Después de descargar el ZIP, necesitas extraerlo y encontrar los archivos correctos:
+                <p className="text-gray-300 leading-relaxed">
+                  Una vez descargado el archivo ZIP de Spotify, simplemente súbelo directamente en esta aplicación:
                 </p>
-                <div className="space-y-3">
-                  <div className="bg-black/50 rounded-lg p-4 border border-white/10">
-                    <p className="text-gray-300 mb-2"><strong className="text-spotify-green">1. Extrae el ZIP:</strong></p>
-                    <p className="text-gray-400 text-sm ml-4">Haz clic derecho en el archivo → "Extraer todo" o usa un programa como WinRAR, 7-Zip, etc.</p>
-                  </div>
-                  <div className="bg-black/50 rounded-lg p-4 border border-white/10">
-                    <p className="text-gray-300 mb-2"><strong className="text-spotify-green">2. Busca estos archivos:</strong></p>
-                    <div className="ml-4 space-y-1 text-sm text-gray-400">
-                      <p>📁 <code className="bg-black/50 px-2 py-1 rounded">StreamingHistory_music_0.json</code></p>
-                      <p>📁 <code className="bg-black/50 px-2 py-1 rounded">StreamingHistory_music_1.json</code></p>
-                      <p>📁 <code className="bg-black/50 px-2 py-1 rounded">StreamingHistory_music_2.json</code></p>
-                      <p className="text-gray-500 text-xs mt-2">(Puede haber más archivos numerados)</p>
-                    </div>
-                  </div>
-                  <div className="bg-black/50 rounded-lg p-4 border border-white/10">
-                    <p className="text-gray-300 mb-2"><strong className="text-spotify-green">3. Opciones para subir:</strong></p>
-                    <ul className="ml-4 space-y-2 text-sm text-gray-400">
-                      <li>✅ <strong>Opción A:</strong> Sube el archivo ZIP completo directamente</li>
-                      <li>✅ <strong>Opción B:</strong> Sube los archivos JSON individuales (todos los StreamingHistory_music_*.json)</li>
-                    </ul>
-                  </div>
-                </div>
                 <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 mt-4">
                   <p className="text-green-300 text-sm">
-                    ✅ <strong>Tip:</strong> Es más fácil subir el ZIP completo. La aplicación lo procesará automáticamente.
+                    ✅ <strong>Tip:</strong> No necesitas extraer el ZIP. Puedes subir el archivo <code className="bg-black/50 px-2 py-1 rounded text-green-200">my_spotify_data.zip</code> completo directamente. La aplicación lo procesará automáticamente.
                   </p>
                 </div>
               </div>
@@ -255,7 +248,7 @@ export default function InfoModal({ isOpen, onClose }: InfoModalProps) {
             </div>
 
             {/* Enlaces útiles */}
-            <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+            <div className="bg-white/5 rounded-xl p-6 border border-white/10 mb-4">
               <h3 className="text-lg font-bold text-spotify-green mb-4 flex items-center">
                 <span className="text-xl mr-2">🔗</span>
                 Enlaces útiles

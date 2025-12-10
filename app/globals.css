@@ -13,8 +13,15 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #0f0f0f 50%, #1a1a1a 75%, #0a0a0a 100%);
+  background: 
+    /* Gradientes base con más color */
+    radial-gradient(ellipse 150% 100% at 50% 0%, #1a1a2e 0%, #0f0f1a 30%, #0a0a0a 60%),
+    radial-gradient(ellipse 150% 100% at 50% 100%, #16213e 0%, #0f1419 30%, #0a0a0a 60%),
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(29, 185, 84, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 80% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 50%),
+    linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #0f0f0f 50%, #1a1a1a 75%, #0a0a0a 100%);
   background-attachment: fixed;
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
   color: white;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
@@ -22,7 +29,7 @@ body {
   position: relative;
 }
 
-/* Fondo animado con partículas */
+/* Fondo animado con gradientes dinámicos y brillos */
 body::before {
   content: '';
   position: fixed;
@@ -30,16 +37,38 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   background: 
-    radial-gradient(circle at 20% 80%, rgba(29, 185, 84, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 80% 20%, rgba(30, 215, 96, 0.06) 0%, transparent 60%),
-    radial-gradient(circle at 40% 40%, rgba(29, 185, 84, 0.04) 0%, transparent 60%),
-    radial-gradient(circle at 60% 70%, rgba(30, 215, 96, 0.05) 0%, transparent 60%);
-  animation: backgroundShift 20s ease-in-out infinite;
+    /* Grid pattern más visible */
+    linear-gradient(rgba(29, 185, 84, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 185, 84, 0.08) 1px, transparent 1px),
+    /* Gradientes de color animados - más intensos */
+    radial-gradient(circle 600px at 20% 30%, rgba(29, 185, 84, 0.25) 0%, transparent 60%),
+    radial-gradient(circle 500px at 80% 70%, rgba(30, 215, 96, 0.22) 0%, transparent 60%),
+    radial-gradient(circle 700px at 50% 50%, rgba(59, 130, 246, 0.18) 0%, transparent 70%),
+    radial-gradient(circle 550px at 70% 20%, rgba(139, 92, 246, 0.2) 0%, transparent 60%),
+    radial-gradient(circle 500px at 30% 80%, rgba(29, 185, 84, 0.2) 0%, transparent 60%),
+    /* Efecto de ondas más visibles */
+    radial-gradient(ellipse 1200px 400px at 50% 0%, rgba(29, 185, 84, 0.12) 0%, transparent 100%),
+    radial-gradient(ellipse 900px 500px at 0% 100%, rgba(30, 215, 96, 0.1) 0%, transparent 100%),
+    radial-gradient(ellipse 1000px 400px at 100% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 100%);
+  background-size: 
+    60px 60px,
+    60px 60px,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  animation: backgroundShift 25s ease-in-out infinite, gridPulse 8s ease-in-out infinite;
   z-index: -2;
+  opacity: 1;
 }
 
-/* Partículas flotantes */
+/* Partículas flotantes y efectos de profundidad */
 body::after {
   content: '';
   position: fixed;
@@ -47,19 +76,37 @@ body::after {
   left: 0;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   background-image: 
-    radial-gradient(2px 2px at 20px 30px, rgba(29, 185, 84, 0.3), transparent),
-    radial-gradient(2px 2px at 40px 70px, rgba(30, 215, 96, 0.2), transparent),
-    radial-gradient(1px 1px at 90px 40px, rgba(29, 185, 84, 0.4), transparent),
-    radial-gradient(1px 1px at 130px 80px, rgba(30, 215, 96, 0.3), transparent),
-    radial-gradient(2px 2px at 160px 30px, rgba(29, 185, 84, 0.2), transparent),
-    /* Patrón de ondas sutiles */
-    linear-gradient(45deg, transparent 48%, rgba(29, 185, 84, 0.02) 49%, rgba(29, 185, 84, 0.02) 51%, transparent 52%),
-    linear-gradient(-45deg, transparent 48%, rgba(30, 215, 96, 0.02) 49%, rgba(30, 215, 96, 0.02) 51%, transparent 52%);
-  background-repeat: repeat;
-  background-size: 200px 100px, 100px 100px, 100px 100px;
-  animation: particleFloat 25s linear infinite;
+    /* Partículas distribuidas aleatoriamente - posiciones variadas */
+    radial-gradient(4px 4px at 12% 15%, rgba(29, 185, 84, 0.6), transparent),
+    radial-gradient(3px 3px at 23% 38%, rgba(30, 215, 96, 0.55), transparent),
+    radial-gradient(2.5px 2.5px at 35% 12%, rgba(59, 130, 246, 0.5), transparent),
+    radial-gradient(3.5px 3.5px at 47% 45%, rgba(29, 185, 84, 0.6), transparent),
+    radial-gradient(2px 2px at 58% 28%, rgba(139, 92, 246, 0.5), transparent),
+    radial-gradient(3px 3px at 67% 62%, rgba(30, 215, 96, 0.55), transparent),
+    radial-gradient(2.5px 2.5px at 78% 18%, rgba(29, 185, 84, 0.5), transparent),
+    radial-gradient(3px 3px at 85% 55%, rgba(59, 130, 246, 0.45), transparent),
+    radial-gradient(2px 2px at 15% 72%, rgba(29, 185, 84, 0.5), transparent),
+    radial-gradient(3.5px 3.5px at 28% 88%, rgba(30, 215, 96, 0.45), transparent),
+    radial-gradient(2.5px 2.5px at 42% 75%, rgba(59, 130, 246, 0.5), transparent),
+    radial-gradient(3px 3px at 55% 92%, rgba(29, 185, 84, 0.55), transparent),
+    radial-gradient(2px 2px at 68% 78%, rgba(139, 92, 246, 0.45), transparent),
+    radial-gradient(3px 3px at 82% 85%, rgba(30, 215, 96, 0.5), transparent),
+    radial-gradient(2.5px 2.5px at 92% 65%, rgba(29, 185, 84, 0.5), transparent),
+    radial-gradient(3px 3px at 8% 42%, rgba(59, 130, 246, 0.45), transparent),
+    radial-gradient(2px 2px at 19% 58%, rgba(29, 185, 84, 0.5), transparent),
+    radial-gradient(3.5px 3.5px at 31% 25%, rgba(30, 215, 96, 0.55), transparent),
+    radial-gradient(2.5px 2.5px at 44% 68%, rgba(139, 92, 246, 0.45), transparent),
+    radial-gradient(3px 3px at 56% 35%, rgba(29, 185, 84, 0.5), transparent),
+    radial-gradient(2px 2px at 69% 48%, rgba(59, 130, 246, 0.45), transparent),
+    radial-gradient(3px 3px at 81% 22%, rgba(30, 215, 96, 0.5), transparent),
+    radial-gradient(2.5px 2.5px at 88% 42%, rgba(29, 185, 84, 0.55), transparent);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  animation: particleFloat 30s linear infinite;
   z-index: -1;
+  opacity: 1;
 }
 
 /* Animaciones personalizadas */
@@ -93,39 +140,57 @@ body::after {
 }
 
 @keyframes backgroundShift {
-  0%, 100% {
-    transform: translateX(0) translateY(0) scale(1);
-    opacity: 0.8;
+  0% {
+    transform: translateX(0) translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+    filter: hue-rotate(0deg) brightness(1);
   }
   25% {
-    transform: translateX(-10px) translateY(-5px) scale(1.02);
-    opacity: 0.9;
+    transform: translateX(-20px) translateY(-15px) scale(1.05) rotate(2deg);
+    opacity: 0.95;
+    filter: hue-rotate(10deg) brightness(1.05);
   }
   50% {
-    transform: translateX(5px) translateY(-10px) scale(0.98);
-    opacity: 0.7;
+    transform: translateX(15px) translateY(-25px) scale(0.95) rotate(-2deg);
+    opacity: 0.9;
+    filter: hue-rotate(-10deg) brightness(0.95);
   }
   75% {
-    transform: translateX(-5px) translateY(5px) scale(1.01);
-    opacity: 0.85;
+    transform: translateX(-10px) translateY(10px) scale(1.02) rotate(1deg);
+    opacity: 0.98;
+    filter: hue-rotate(5deg) brightness(1.02);
+  }
+  100% {
+    transform: translateX(0) translateY(0) scale(1) rotate(0deg);
+    opacity: 1;
+    filter: hue-rotate(0deg) brightness(1);
   }
 }
 
 @keyframes particleFloat {
   0% {
-    transform: translateY(0) translateX(0);
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0.8;
   }
-  25% {
-    transform: translateY(-20px) translateX(10px);
+  20% {
+    transform: translateY(-30px) translateX(15px) rotate(5deg);
+    opacity: 0.9;
   }
-  50% {
-    transform: translateY(-10px) translateX(-5px);
+  40% {
+    transform: translateY(-15px) translateX(-10px) rotate(-3deg);
+    opacity: 0.85;
   }
-  75% {
-    transform: translateY(-30px) translateX(15px);
+  60% {
+    transform: translateY(-40px) translateX(20px) rotate(4deg);
+    opacity: 0.95;
+  }
+  80% {
+    transform: translateY(-20px) translateX(-5px) rotate(-2deg);
+    opacity: 0.88;
   }
   100% {
-    transform: translateY(0) translateX(0);
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0.8;
   }
 }
 
@@ -175,6 +240,16 @@ body::after {
 
 .animate-particle-float {
   animation: particleFloat 25s linear infinite;
+}
+
+/* Efecto de grid sutil para profundidad */
+@keyframes gridPulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 /* Componentes personalizados */

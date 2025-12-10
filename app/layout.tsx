@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="es">
       <body className={inter.className}>
         <Analytics />
-        <div className="min-h-screen bg-spotify-dark">
+        <div className="min-h-screen relative z-10">
           {children}
         </div>
       </body>
